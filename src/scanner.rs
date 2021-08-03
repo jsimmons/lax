@@ -135,7 +135,8 @@ impl<'lax, 'chunk, 'text, 'report> Scanner<'lax, 'chunk, 'text, 'report> {
         self.tokens.clear();
         'next_token: while !self.is_at_end() {
             self.start = self.current;
-            match self.advance() {
+            let c = self.advance();
+            match c {
                 b'(' => self.add_token(TokenType::LeftParen),
                 b')' => self.add_token(TokenType::RightParen),
                 b'{' => self.add_token(TokenType::LeftBrace),
@@ -254,7 +255,8 @@ impl<'lax, 'chunk, 'text, 'report> Scanner<'lax, 'chunk, 'text, 'report> {
                     }
                 }
                 _ => {
-                    self.lax.error(self.line, "unexpected character");
+                    self.lax
+                        .error(self.line, &format!("unexpected character '{}'", c as char));
                 }
             }
         }
